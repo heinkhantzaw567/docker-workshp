@@ -8,12 +8,10 @@ RUN uv sync --locked
 WORKDIR /code
 ENV PATH="/code/.venv/bin:$PATH"
 
-RUN pip install pandas pyarrow
+RUN pip install pandas sqlalchemy psycopg2-binary click tqdm
 
+COPY ingest_data.py .
 
-
-COPY pipeline.py .
-
-ENTRYPOINT ["python", "pipeline.py"]
+ENTRYPOINT ["python", "ingest_data.py"]
 
 

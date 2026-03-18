@@ -37,22 +37,23 @@ parse_dates =[
 ]
 
 
+import click
 from sqlalchemy import create_engine
 
-def run():
-    pg_user = "root"
-    pg_password = "root"
-    pg_host = "localhost"
-    pg_db = "hi"
-    pg_port = 5432
-    year = 2021
-    month = 1
+@click.command()
+@click.option("--pg_user", default="root", help="PostgreSQL username")
+@click.option("--pg_password", default="root", help="PostgreSQL password")
+@click.option("--pg_host", default="localhost", help="PostgreSQL host")
+@click.option("--pg_db", default="hi", help="PostgreSQL database name")
+@click.option("--pg_port", default=5432, type=int, help="PostgreSQL port")
+@click.option("--year", default=2021, type=int, help="Year of the data")
+@click.option("--month", default=1, type=int, help="Month of the data")
+@click.option("--table_name", default="yellow_taxi_data", help="Name of the target table")
+@click.option("--chunksize", default=100000, type=int, help="Number of rows per chunk")
+def run(pg_user, pg_password, pg_host, pg_db, pg_port, year, month, table_name, chunksize):
     prefix ='https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow'
     url =f'{prefix}/yellow_tripdata_{year}-{month:02d}.csv.gz'
     engine = create_engine(f'postgresql://{pg_user}:{pg_password}@{pg_host}:{pg_port}/{pg_db}')
-    table_name = 'yellow_taxi_data'
-
-    chunksize = 100000
 
     
     df_iter = pd.read_csv(
